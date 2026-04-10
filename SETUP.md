@@ -15,17 +15,27 @@ npm install
 
 ### 2. Set Up Environment Variables
 
-Copy `.env.local.example` to `.env.local` and add your Anthropic API key:
+Copy `.env.local.example` to `.env.local`:
 
 ```bash
 cp .env.local.example .env.local
 ```
 
-Then edit `.env.local` and add your API key:
+Then edit `.env.local` to configure your backend:
 
+**Option A: Use Claude CLI (Recommended - No API Quota Usage)**
 ```
+FOLLOWUP_BACKEND=cli
+# ANTHROPIC_API_KEY not needed
+```
+
+**Option B: Use Anthropic API (Uses Your API Quota)**
+```
+FOLLOWUP_BACKEND=api
 ANTHROPIC_API_KEY=your-api-key-here
 ```
+
+The default is `cli` to preserve your API quota.
 
 ### 3. Run Development Server
 
@@ -67,6 +77,37 @@ sox-agent-builder/
 │   └── persistence.ts                 # Save/load specs
 └── public/                            # Static assets
 ```
+
+## Backend Configuration
+
+The Agent Spec Builder supports two backends for generating intelligent follow-up questions:
+
+### Claude CLI Backend (Default - Recommended)
+- **What it is**: Uses the local Claude Code CLI (`claude` command)
+- **API Quota**: ✅ **No impact** on your Anthropic API quota
+- **Setup**: Just ensure the `claude` CLI is available in your PATH
+- **Fallback**: If Claude CLI unavailable, automatically uses template-based questions
+- **Best for**: Local development, preserving API quota
+
+```bash
+FOLLOWUP_BACKEND=cli
+```
+
+### Anthropic API Backend
+- **What it is**: Direct calls to the Anthropic API
+- **API Quota**: ⚠️ **Uses** your Anthropic API quota
+- **Setup**: Requires `ANTHROPIC_API_KEY` environment variable
+- **Best for**: Production deployments, when CLI not available
+
+```bash
+FOLLOWUP_BACKEND=api
+ANTHROPIC_API_KEY=your-api-key-here
+```
+
+### Switching Backends
+Simply change `FOLLOWUP_BACKEND` in `.env.local` and restart the dev server. The app automatically uses the configured backend.
+
+---
 
 ## How It Works
 
